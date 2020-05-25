@@ -1,6 +1,9 @@
 {
-  "name": "strava-pwa",
+  "name": "strava-stats-fe",
   "version": "0.1.0",
+  "engines": {
+    "node": "12.16.x"
+  },
   "private": true,
   "dependencies": {
     "react": "^16.12.0",
