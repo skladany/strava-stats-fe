@@ -1,6 +1,5 @@
 import React, { useState, useEffect } from "react";
 import "./App.css";
-import testData from "./testData.js";
 
 function App() {
   // const [isLoading, setIsLoading] = useState(true);
@@ -43,6 +42,8 @@ function App() {
 
       // Spare the API during development
       if (process.env.NODE_ENV === "development") {
+        const testData =
+          '[[{"distance":185106.50000000003,"runs":21}],[{"distance":173474.39999999997,"runs":19}],[{"distance":174614.1,"runs":22}],[{"distance":190920.3,"runs":19}],[{"distance":213984.49999999997,"runs":16}],[{"distance":136323.2,"runs":15}]]';
         runData = JSON.parse(testData);
 
         const distance = runData.reduce((distance, activities) => {
