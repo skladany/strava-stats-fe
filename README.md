@@ -1,4 +1,4 @@
-# Strave Yearly Mileage
+# Strava Stats FE
 
 ## Todo
 
