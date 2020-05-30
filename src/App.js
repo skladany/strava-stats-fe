@@ -48,8 +48,8 @@ function App() {
 
   useEffect(() => {
     const fetchData = async () => {
-      //const endpoint = `https://tranquil-garden-10879.herokuapp.com`;
-      const endpoint = `http://localhost:7777`;
+      const endpoint = `https://tranquil-garden-10879.herokuapp.com`;
+      //const endpoint = `http://localhost:7777`;
 
       let page = 1;
       let runData = [];
