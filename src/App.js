@@ -46,7 +46,18 @@ function App() {
     return new Date(date);
   };
 
+  const toggleMileage = (mile) => {
+    const weeklyGoal = weeklyMileageGoal + mile;
+    setWeeklyMileageGoal(weeklyGoal);
+    localStorage.setItem("weeklyGoal", weeklyGoal);
+  };
+
   useEffect(() => {
+    const loadLocalStorage = () => {
+      const weeklyGoal = parseInt(localStorage.getItem("weeklyGoal")) || 40;
+      setWeeklyMileageGoal(weeklyGoal);
+    };
+
     const fetchData = async () => {
       const endpoint = `https://tranquil-garden-10879.herokuapp.com`;
       //const endpoint = `http://localhost:7777`;
@@ -124,6 +135,7 @@ function App() {
       // }, 0);
     }; // end if/else
 
+    loadLocalStorage();
     fetchData();
   }, []);
 
@@ -139,13 +151,25 @@ function App() {
       <header className="App-header">
         <h1>🦄 Ashley Runs the World! 🏃‍♀️</h1>
         <p>
-          {currentMiles} of {mileageGoal} yearly miles.
+          <strong>{currentMiles}</strong> of <strong>{mileageGoal}</strong>
+          yearly miles.
         </p>
         <p>
-          {currentWeeklyMiles} of {weeklyMileageGoal} weekly miles.
+          <strong>{currentWeeklyMiles}</strong> of{" "}
+          <strong>{weeklyMileageGoal}</strong> weekly miles.
+          <br />
+          <strong>{weeklyMileageGoal - currentWeeklyMiles}</strong> to go!!!
         </p>
-        <p>You have {daysLeft()} days to hit your goal!</p>
-        <p>Run {milesPerDay()} miles a day to hit your goal!</p>
+        <div className="toggles">
+          <button onClick={() => toggleMileage(-1)}>👇</button>
+          <button onClick={() => toggleMileage(1)}>👆</button>
+        </div>
+        <p>
+          You have <strong>{daysLeft()}</strong> days to hit your goal!
+        </p>
+        <p>
+          Run <strong>{milesPerDay()}</strong> miles a day to hit your goal!
+        </p>
       </header>
     </div>
   );
