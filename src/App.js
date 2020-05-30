@@ -151,7 +151,7 @@ function App() {
       <header className="App-header">
         <h1>🦄 Ashley Runs the World! 🏃‍♀️</h1>
         <p>
-          <strong>{currentMiles}</strong> of <strong>{mileageGoal}</strong>
+          <strong>{currentMiles}</strong> of <strong>{mileageGoal}</strong>{" "}
           yearly miles.
         </p>
         <p>
