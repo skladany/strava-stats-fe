@@ -2,9 +2,12 @@ import React, { useState, useEffect } from "react";
 import "./App.css";
 
 function App() {
-  // const [isLoading, setIsLoading] = useState(true);
+  const [isLoading, setIsLoading] = useState(true);
   const [mileageGoal, setMileageGoal] = useState(2020);
   const [currentMiles, setCurrentMiles] = useState(0);
+
+  const [weeklyMileageGoal, setWeeklyMileageGoal] = useState(40);
+  const [currentWeeklyMiles, setCurrentWeeklyMiles] = useState(0);
 
   const currDayNumber = () => {
     const today = new Date();
@@ -32,29 +35,37 @@ function App() {
     return (meters * 0.000621371).toFixed(2);
   };
 
+  // Get the start of the week, given the current date
+  // https://www.w3resource.com/javascript-exercises/javascript-date-exercise-50.php
+  const startOfWeek = (date) => {
+    const day = date.getDate() - date.getDay() + (date.getDay() === 0 ? -6 : 1);
+
+    date.setDate(day);
+    date.setHours(0, 0, 0, 0);
+
+    return new Date(date);
+  };
+
   useEffect(() => {
     const fetchData = async () => {
-      const endpoint = `https://tranquil-garden-10879.herokuapp.com`;
-      //const endpoint = `http://localhost:7777`;
+      //const endpoint = `https://tranquil-garden-10879.herokuapp.com`;
+      const endpoint = `http://localhost:7777`;
 
       let page = 1;
       let runData = [];
 
       // Spare the API during development
-      if (process.env.NODE_ENV === "development") {
-        const testData =
-          '[[{"distance":185106.50000000003,"runs":21}],[{"distance":173474.39999999997,"runs":19}],[{"distance":174614.1,"runs":22}],[{"distance":190920.3,"runs":19}],[{"distance":213984.49999999997,"runs":16}],[{"distance":136323.2,"runs":15}]]';
-        runData = JSON.parse(testData);
-
-        const distance = runData.reduce((distance, activities) => {
-          return activities[0].distance + distance;
-        }, 0);
-
-        const runs = runData.reduce((runs, activities) => {
-          return activities[0].runs + runs;
-        }, 0);
-
-        setCurrentMiles(metersToMiles(distance));
+      if (process.env.NODE_ENV !== "development") {
+        // const testData =
+        //   '[[{"distance":185106.50000000003,"runs":21}],[{"distance":173474.39999999997,"runs":19}],[{"distance":174614.1,"runs":22}],[{"distance":190920.3,"runs":19}],[{"distance":213984.49999999997,"runs":16}],[{"distance":136323.2,"runs":15}]]';
+        // runData = JSON.parse(testData);
+        // const distance = runData.reduce((distance, activities) => {
+        //   return activities[0].distance + distance;
+        // }, 0);
+        // const runs = runData.reduce((runs, activities) => {
+        //   return activities[0].runs + runs;
+        // }, 0);
+        // setCurrentMiles(metersToMiles(distance));
       } else
         while (true) {
           const data = await fetch(
@@ -65,33 +76,73 @@ function App() {
             break;
           }
 
-          console.log(data);
+          runData = [...runData, ...data];
 
-          runData.push(data);
+          // runData.push(data);
 
-          const distance = runData.reduce((distance, activities) => {
-            return activities[0].distance + distance;
-          }, 0);
+          // const distance = runData.reduce((distance, activities) => {
+          //   return activities[0].distance + distance;
+          // }, 0);
 
-          const runs = runData.reduce((runs, activities) => {
-            return activities[0].runs + runs;
-          }, 0);
+          // const runs = runData.reduce((runs, activities) => {
+          //   return activities[0].runs + runs;
+          // }, 0);
 
-          setCurrentMiles(metersToMiles(distance));
+          // setCurrentMiles(metersToMiles(distance));
 
           page++;
         } // end while
+
+      // Parse the data
+
+      const distance = runData.reduce((totalDistance, { distance }) => {
+        return totalDistance + distance;
+      }, 0);
+      setCurrentMiles(metersToMiles(distance));
+
+      const today = new Date();
+      const monday = startOfWeek(today);
+      console.log(monday);
+
+      const thisWeek = runData
+        .filter(({ start_date }) => {
+          // @todo this is UTC time, need to account for timezones eventually
+          // ...but generally close enough for now
+          const activityDate = new Date(start_date);
+
+          return activityDate > monday;
+        })
+        .reduce((totalDistance, { distance }) => {
+          return totalDistance + distance;
+        }, 0);
+      setCurrentWeeklyMiles(metersToMiles(thisWeek));
+
+      setIsLoading(false);
+
+      // const runs = runData.reduce((runs, activities) => {
+      //   return activities[0].runs + runs;
+      // }, 0);
     }; // end if/else
 
     fetchData();
   }, []);
 
-  return (
+  return isLoading ? (
+    <div className="App">
+      <header className="App-header">
+        <h1>🦄 Ashley Runs the World! 🏃‍♀️</h1>
+        <img src="/loading.gif" />
+      </header>
+    </div>
+  ) : (
     <div className="App">
       <header className="App-header">
         <h1>🦄 Ashley Runs the World! 🏃‍♀️</h1>
         <p>
-          {currentMiles} of {mileageGoal} miles.
+          {currentMiles} of {mileageGoal} yearly miles.
+        </p>
+        <p>
+          {currentWeeklyMiles} of {weeklyMileageGoal} weekly miles.
         </p>
         <p>You have {daysLeft()} days to hit your goal!</p>
         <p>Run {milesPerDay()} miles a day to hit your goal!</p>
