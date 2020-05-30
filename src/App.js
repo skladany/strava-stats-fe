@@ -47,7 +47,8 @@ function App() {
   };
 
   const toggleMileage = (mile) => {
-    const weeklyGoal = weeklyMileageGoal + mile;
+    const weeklyGoal =
+      weeklyMileageGoal + mile > 0 ? weeklyMileageGoal + mile : 0;
     setWeeklyMileageGoal(weeklyGoal);
     localStorage.setItem("weeklyGoal", weeklyGoal);
   };
@@ -113,7 +114,6 @@ function App() {
 
       const today = new Date();
       const monday = startOfWeek(today);
-      console.log(monday);
 
       const thisWeek = runData
         .filter(({ start_date }) => {
@@ -158,7 +158,10 @@ function App() {
           <strong>{currentWeeklyMiles}</strong> of{" "}
           <strong>{weeklyMileageGoal}</strong> weekly miles.
           <br />
-          <strong>{weeklyMileageGoal - currentWeeklyMiles}</strong> to go!!!
+          <strong>
+            {parseFloat(weeklyMileageGoal - currentWeeklyMiles).toFixed(2)}
+          </strong>{" "}
+          to go!!!
         </p>
         <div className="toggles">
           <button onClick={() => toggleMileage(-1)}>👇</button>
