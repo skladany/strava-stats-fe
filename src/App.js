@@ -55,43 +55,43 @@ function App() {
       let runData = [];
 
       // Spare the API during development
-      if (process.env.NODE_ENV !== "development") {
-        // const testData =
-        //   '[[{"distance":185106.50000000003,"runs":21}],[{"distance":173474.39999999997,"runs":19}],[{"distance":174614.1,"runs":22}],[{"distance":190920.3,"runs":19}],[{"distance":213984.49999999997,"runs":16}],[{"distance":136323.2,"runs":15}]]';
-        // runData = JSON.parse(testData);
+      // if (process.env.NODE_ENV !== "development") {
+      //   // const testData =
+      //   //   '[[{"distance":185106.50000000003,"runs":21}],[{"distance":173474.39999999997,"runs":19}],[{"distance":174614.1,"runs":22}],[{"distance":190920.3,"runs":19}],[{"distance":213984.49999999997,"runs":16}],[{"distance":136323.2,"runs":15}]]';
+      //   // runData = JSON.parse(testData);
+      //   // const distance = runData.reduce((distance, activities) => {
+      //   //   return activities[0].distance + distance;
+      //   // }, 0);
+      //   // const runs = runData.reduce((runs, activities) => {
+      //   //   return activities[0].runs + runs;
+      //   // }, 0);
+      //   // setCurrentMiles(metersToMiles(distance));
+      // } else
+      while (true) {
+        const data = await fetch(
+          `${endpoint}/strava/distance_run?page=${page}&per_page=50`
+        ).then((r) => r.json());
+
+        if (data.length < 1) {
+          break;
+        }
+
+        runData = [...runData, ...data];
+
+        // runData.push(data);
+
         // const distance = runData.reduce((distance, activities) => {
         //   return activities[0].distance + distance;
         // }, 0);
+
         // const runs = runData.reduce((runs, activities) => {
         //   return activities[0].runs + runs;
         // }, 0);
+
         // setCurrentMiles(metersToMiles(distance));
-      } else
-        while (true) {
-          const data = await fetch(
-            `${endpoint}/strava/distance_run?page=${page}&per_page=50`
-          ).then((r) => r.json());
 
-          if (data.length < 1) {
-            break;
-          }
-
-          runData = [...runData, ...data];
-
-          // runData.push(data);
-
-          // const distance = runData.reduce((distance, activities) => {
-          //   return activities[0].distance + distance;
-          // }, 0);
-
-          // const runs = runData.reduce((runs, activities) => {
-          //   return activities[0].runs + runs;
-          // }, 0);
-
-          // setCurrentMiles(metersToMiles(distance));
-
-          page++;
-        } // end while
+        page++;
+      } // end while
 
       // Parse the data
 
