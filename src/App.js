@@ -27,6 +27,18 @@ function App() {
     return day;
   };
 
+  const goalPace = () => {
+    // Ideal Pace
+    const milesPerDay = mileageGoal / (currDayNumber() + daysLeft());
+    const goalPace = currDayNumber() * milesPerDay;
+
+    return goalPace.toFixed(2);
+  };
+
+  const currPace = () => {
+    return (goalPace() - currentMiles).toFixed(2);
+  };
+
   const milesPerDay = () => {
     return parseFloat((mileageGoal - currentMiles) / daysLeft()).toFixed(2);
   };
@@ -167,6 +179,10 @@ function App() {
           <button onClick={() => toggleMileage(-1)}>👇</button>
           <button onClick={() => toggleMileage(1)}>👆</button>
         </div>
+        <p>
+          You are <strong>{currPace()}</strong> miles off your yearly goal pace
+          of <strong>{goalPace()}</strong>.
+        </p>
         <p>
           You have <strong>{daysLeft()}</strong> days to hit your goal!
         </p>
