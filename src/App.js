@@ -5,6 +5,7 @@ function App() {
   const [isLoading, setIsLoading] = useState(true);
   const [mileageGoal, setMileageGoal] = useState(2020);
   const [currentMiles, setCurrentMiles] = useState(0);
+  const [currentSubwayMiles, setCurrentSubwayMiles] = useState(0);
 
   const [weeklyMileageGoal, setWeeklyMileageGoal] = useState(40);
   const [currentWeeklyMiles, setCurrentWeeklyMiles] = useState(0);
@@ -27,6 +28,14 @@ function App() {
     return day;
   };
 
+  const daysSubwayLeft = () => {
+    // 0-indexed start
+    const startDate = new Date(2020, 5, 3);
+    const day = Math.floor((new Date(2020, 6, 15) - startDate) / 86400000);
+
+    return day;
+  };
+
   const goalPace = () => {
     // Ideal Pace
     const milesPerDay = mileageGoal / (currDayNumber() + daysLeft());
@@ -41,6 +50,10 @@ function App() {
 
   const milesPerDay = () => {
     return parseFloat((mileageGoal - currentMiles) / daysLeft()).toFixed(2);
+  };
+
+  const milesPerSubwayDay = () => {
+    return parseFloat((245 - currentSubwayMiles) / daysSubwayLeft()).toFixed(2);
   };
 
   const metersToMiles = (meters) => {
@@ -140,6 +153,21 @@ function App() {
         }, 0);
       setCurrentWeeklyMiles(metersToMiles(thisWeek));
 
+      const subwayStart = new Date(2020, 5, 3); // 0-index month!
+      console.log(subwayStart);
+      const subwayMiles = runData
+        .filter(({ start_date }) => {
+          // @todo this is UTC time, need to account for timezones eventually
+          // ...but generally close enough for now
+          const activityDate = new Date(start_date);
+
+          return activityDate > subwayStart;
+        })
+        .reduce((totalDistance, { distance }) => {
+          return totalDistance + distance;
+        }, 0);
+      setCurrentSubwayMiles(metersToMiles(subwayMiles));
+
       setIsLoading(false);
 
       // const runs = runData.reduce((runs, activities) => {
@@ -163,9 +191,18 @@ function App() {
       <header className="App-header">
         <h1>🦄 Ashley Runs the World! 🏃‍♀️</h1>
         <p>
-          <strong>{currentMiles}</strong> of <strong>{mileageGoal}</strong>{" "}
-          yearly miles.
+          <strong>{currentSubwayMiles}</strong> of <strong>245</strong> 🚂
+          miles.
         </p>
+        <p>
+          You have <strong>{daysSubwayLeft()}</strong> days left to hit your
+          goal!
+        </p>
+        <p>
+          Run <strong>{milesPerSubwayDay()}</strong> miles a day to hit your
+          goal!
+        </p>
+        <p>&hellip;</p>
         <p>
           <strong>{currentWeeklyMiles}</strong> of{" "}
           <strong>{weeklyMileageGoal}</strong> weekly miles.
@@ -179,12 +216,17 @@ function App() {
           <button onClick={() => toggleMileage(-1)}>👇</button>
           <button onClick={() => toggleMileage(1)}>👆</button>
         </div>
+        <p>&hellip;</p>
+        <p>
+          <strong>{currentMiles}</strong> of <strong>{mileageGoal}</strong>{" "}
+          yearly miles.
+        </p>
         <p>
           You are <strong>{currPace()}</strong> miles off your yearly goal pace
           of <strong>{goalPace()}</strong>.
         </p>
         <p>
-          You have <strong>{daysLeft()}</strong> days to hit your goal!
+          You have <strong>{daysLeft()}</strong> days left to hit your goal!
         </p>
         <p>
           Run <strong>{milesPerDay()}</strong> miles a day to hit your goal!
