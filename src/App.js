@@ -30,8 +30,8 @@ function App() {
 
   const daysSubwayLeft = () => {
     // 0-indexed start
-    const startDate = new Date(2020, 5, 3);
-    const day = Math.floor((new Date(2020, 6, 15) - startDate) / 86400000);
+    const today = new Date();
+    const day = Math.floor((new Date(2020, 6, 15) - today) / 86400000);
 
     return day;
   };
