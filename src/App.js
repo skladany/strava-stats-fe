@@ -31,7 +31,7 @@ function App() {
   const daysSubwayLeft = () => {
     // 0-indexed start
     const today = new Date();
-    const day = Math.floor((new Date(2020, 6, 15) - today) / 86400000);
+    const day = Math.ceil((new Date(2020, 6, 15) - today) / 86400000);
 
     return day;
   };
