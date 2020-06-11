@@ -1,8 +1,5 @@
 .App {
   text-align: center;
-}
-
-.App-header {
   background-color: #282c34;
   min-height: 100vh;
   display: flex;
@@ -11,6 +8,7 @@
   justify-content: center;
   font-size: calc(7px + 1vmin);
   color: white;
+  padding: 0 24px;
 }
 
 .App-link {
@@ -42,4 +40,27 @@ p {
 
 strong {
   color: hotpink;
+}
+
+.progress-bar {
+  position: relative;
+  width: 70vw;
+  height: 50px;
+  border: 1px solid hotpink;
+  z-index: 0;
+}
+
+.progress-bar .bar {
+  left: 0;
+  position: absolute;
+  content: " ";
+  width: 0;
+  height: 50px;
+  background-color: rgb(118, 27, 169);
+  transition: ease-in 3s;
+  z-index: -1;
+}
+
+.progress-bar.animate.bar {
+  width: 50%;
 }

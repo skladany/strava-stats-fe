@@ -6,6 +6,7 @@ function App() {
   const [mileageGoal, setMileageGoal] = useState(2020);
   const [currentMiles, setCurrentMiles] = useState(0);
   const [currentSubwayMiles, setCurrentSubwayMiles] = useState(0);
+  const [subwayProgressBar, setSubwayProgressBar] = useState("0%");
 
   const [weeklyMileageGoal, setWeeklyMileageGoal] = useState(40);
   const [currentWeeklyMiles, setCurrentWeeklyMiles] = useState(0);
@@ -154,7 +155,6 @@ function App() {
       setCurrentWeeklyMiles(metersToMiles(thisWeek));
 
       const subwayStart = new Date(2020, 5, 3); // 0-index month!
-      console.log(subwayStart);
       const subwayMiles = runData
         .filter(({ start_date }) => {
           // @todo this is UTC time, need to account for timezones eventually
@@ -179,59 +179,65 @@ function App() {
     fetchData();
   }, []);
 
+  useEffect(() => {
+    setTimeout(() => {
+      let progress = ((currentSubwayMiles / 245) * 100).toFixed(2);
+      console.log(progress);
+      console.log(`${progress}%`);
+      setSubwayProgressBar(`${progress}%`);
+    }, 1000);
+  }, [currentSubwayMiles]);
+
   return isLoading ? (
     <div className="App">
-      <header className="App-header">
-        <h1>🦄 Ashley Runs the World! 🏃‍♀️</h1>
-        <img src="/loading.gif" />
-      </header>
+      <h1>🦄 Ashley Runs the World! 🏃‍♀️</h1>
+      <img src="/loading.gif" />
     </div>
   ) : (
     <div className="App">
-      <header className="App-header">
-        <h1>🦄 Ashley Runs the World! 🏃‍♀️</h1>
+      <h1>🦄 Ashley Runs the World! 🏃‍♀️</h1>
+      <div className="progress-bar subway">
+        <div className="bar" style={{ width: subwayProgressBar }}></div>
         <p>
           <strong>{currentSubwayMiles}</strong> of <strong>245</strong> 🚂
           miles.
         </p>
-        <p>
-          You have <strong>{daysSubwayLeft()}</strong> days left to hit your
-          goal!
-        </p>
-        <p>
-          Run <strong>{milesPerSubwayDay()}</strong> miles a day to hit your
-          goal!
-        </p>
-        <p>&hellip;</p>
-        <p>
-          <strong>{currentWeeklyMiles}</strong> of{" "}
-          <strong>{weeklyMileageGoal}</strong> weekly miles.
-          <br />
-          <strong>
-            {parseFloat(weeklyMileageGoal - currentWeeklyMiles).toFixed(2)}
-          </strong>{" "}
-          to go!!!
-        </p>
-        <div className="toggles">
-          <button onClick={() => toggleMileage(-1)}>👇</button>
-          <button onClick={() => toggleMileage(1)}>👆</button>
-        </div>
-        <p>&hellip;</p>
-        <p>
-          <strong>{currentMiles}</strong> of <strong>{mileageGoal}</strong>{" "}
-          yearly miles.
-        </p>
-        <p>
-          You are <strong>{currPace()}</strong> miles off your yearly goal pace
-          of <strong>{goalPace()}</strong>.
-        </p>
-        <p>
-          You have <strong>{daysLeft()}</strong> days left to hit your goal!
-        </p>
-        <p>
-          Run <strong>{milesPerDay()}</strong> miles a day to hit your goal!
-        </p>
-      </header>
+      </div>
+      <p>
+        You have <strong>{daysSubwayLeft()}</strong> days left to hit your goal!
+      </p>
+      <p>
+        Run <strong>{milesPerSubwayDay()}</strong> miles a day to hit your goal!
+      </p>
+      <p>&hellip;</p>
+      <p>
+        <strong>{currentWeeklyMiles}</strong> of{" "}
+        <strong>{weeklyMileageGoal}</strong> weekly miles.
+        <br />
+        <strong>
+          {parseFloat(weeklyMileageGoal - currentWeeklyMiles).toFixed(2)}
+        </strong>{" "}
+        to go!!!
+      </p>
+      <div className="toggles">
+        <button onClick={() => toggleMileage(-1)}>👇</button>
+        <button onClick={() => toggleMileage(1)}>👆</button>
+      </div>
+      <p>&hellip;</p>
+      <p>
+        <strong>{currentMiles}</strong> of <strong>{mileageGoal}</strong> yearly
+        miles.
+      </p>
+      <p>
+        You are <strong>{currPace()}</strong> miles off your yearly goal pace of{" "}
+        <strong>{goalPace()}</strong>.
+      </p>
+      <p>
+        You have <strong>{daysLeft()}</strong> days left to hit your goal!
+      </p>
+      <p>
+        Run <strong>{milesPerDay()}</strong> miles a day to hit your goal!
+      </p>
     </div>
   );
 }
