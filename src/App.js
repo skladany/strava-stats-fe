@@ -120,19 +120,6 @@ function App() {
         }, 0);
       setCurrentWeeklyMiles(metersToMiles(thisWeek));
 
-      const subwayStart = new Date(2020, 5, 3); // 0-index month!
-      const subwayMiles = runData
-        .filter(({ start_date }) => {
-          // @todo this is UTC time, need to account for timezones eventually
-          // ...but generally close enough for now
-          const activityDate = new Date(start_date);
-
-          return activityDate > subwayStart;
-        })
-        .reduce((totalDistance, { distance }) => {
-          return totalDistance + distance;
-        }, 0);
-
       setIsLoading(false);
     }; // end if/else
 
