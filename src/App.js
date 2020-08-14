@@ -1,12 +1,12 @@
 import React, { useState, useEffect } from "react";
 import "./App.css";
+import testData from "./data/testData";
 
 function App() {
   const [isLoading, setIsLoading] = useState(true);
   const [mileageGoal, setMileageGoal] = useState(2020);
   const [currentMiles, setCurrentMiles] = useState(0);
-  const [currentSubwayMiles, setCurrentSubwayMiles] = useState(0);
-  const [subwayProgressBar, setSubwayProgressBar] = useState("0%");
+  const [progressBar, setProgressBar] = useState("0%");
 
   const [weeklyMileageGoal, setWeeklyMileageGoal] = useState(40);
   const [currentWeeklyMiles, setCurrentWeeklyMiles] = useState(0);
@@ -29,14 +29,6 @@ function App() {
     return day;
   };
 
-  const daysSubwayLeft = () => {
-    // 0-indexed start
-    const today = new Date();
-    const day = Math.ceil((new Date(2020, 6, 15) - today) / 86400000);
-
-    return day;
-  };
-
   const goalPace = () => {
     // Ideal Pace
     const milesPerDay = mileageGoal / (currDayNumber() + daysLeft());
@@ -51,10 +43,6 @@ function App() {
 
   const milesPerDay = () => {
     return parseFloat((mileageGoal - currentMiles) / daysLeft()).toFixed(2);
-  };
-
-  const milesPerSubwayDay = () => {
-    return parseFloat((245 - currentSubwayMiles) / daysSubwayLeft()).toFixed(2);
   };
 
   const metersToMiles = (meters) => {
@@ -92,47 +80,25 @@ function App() {
       let page = 1;
       let runData = [];
 
-      // Spare the API during development
-      // if (process.env.NODE_ENV !== "development") {
-      //   // const testData =
-      //   //   '[[{"distance":185106.50000000003,"runs":21}],[{"distance":173474.39999999997,"runs":19}],[{"distance":174614.1,"runs":22}],[{"distance":190920.3,"runs":19}],[{"distance":213984.49999999997,"runs":16}],[{"distance":136323.2,"runs":15}]]';
-      //   // runData = JSON.parse(testData);
-      //   // const distance = runData.reduce((distance, activities) => {
-      //   //   return activities[0].distance + distance;
-      //   // }, 0);
-      //   // const runs = runData.reduce((runs, activities) => {
-      //   //   return activities[0].runs + runs;
-      //   // }, 0);
-      //   // setCurrentMiles(metersToMiles(distance));
-      // } else
-      while (true) {
-        const data = await fetch(
-          `${endpoint}/strava/distance_run?page=${page}&per_page=50`
-        ).then((r) => r.json());
+      if (process.env.NODE_ENV === "development") {
+        runData = testData;
+      } else {
+        while (true) {
+          const data = await fetch(
+            `${endpoint}/strava/distance_run?page=${page}&per_page=50`
+          ).then((r) => r.json());
 
-        if (data.length < 1) {
-          break;
-        }
+          if (data.length < 1) {
+            break;
+          }
 
-        runData = [...runData, ...data];
+          runData = [...runData, ...data];
 
-        // runData.push(data);
-
-        // const distance = runData.reduce((distance, activities) => {
-        //   return activities[0].distance + distance;
-        // }, 0);
-
-        // const runs = runData.reduce((runs, activities) => {
-        //   return activities[0].runs + runs;
-        // }, 0);
-
-        // setCurrentMiles(metersToMiles(distance));
-
-        page++;
-      } // end while
+          page++;
+        } // end while
+      }
 
       // Parse the data
-
       const distance = runData.reduce((totalDistance, { distance }) => {
         return totalDistance + distance;
       }, 0);
@@ -166,13 +132,8 @@ function App() {
         .reduce((totalDistance, { distance }) => {
           return totalDistance + distance;
         }, 0);
-      setCurrentSubwayMiles(metersToMiles(subwayMiles));
 
       setIsLoading(false);
-
-      // const runs = runData.reduce((runs, activities) => {
-      //   return activities[0].runs + runs;
-      // }, 0);
     }; // end if/else
 
     loadLocalStorage();
@@ -181,12 +142,10 @@ function App() {
 
   useEffect(() => {
     setTimeout(() => {
-      let progress = ((currentSubwayMiles / 245) * 100).toFixed(2);
-      console.log(progress);
-      console.log(`${progress}%`);
-      setSubwayProgressBar(`${progress}%`);
+      let progress = ((currentMiles / mileageGoal) * 100).toFixed(2);
+      setProgressBar(`${progress}%`);
     }, 1000);
-  }, [currentSubwayMiles]);
+  }, [currentMiles]);
 
   return isLoading ? (
     <div className="App">
@@ -197,17 +156,21 @@ function App() {
     <div className="App">
       <h1>🦄 Ashley Runs the World! 🏃‍♀️</h1>
       <div className="progress-bar subway">
-        <div className="bar" style={{ width: subwayProgressBar }}></div>
+        <div className="bar" style={{ width: progressBar }}></div>
         <p>
-          <strong>{currentSubwayMiles}</strong> of <strong>245</strong> 🚂
+          <strong>{currentMiles}</strong> of <strong>{mileageGoal}</strong> 🏁
           miles.
         </p>
       </div>
       <p>
-        You have <strong>{daysSubwayLeft()}</strong> days left to hit your goal!
+        You are <strong>{currPace()}</strong> miles off your yearly goal pace of{" "}
+        <strong>{goalPace()}</strong>.
       </p>
       <p>
-        Run <strong>{milesPerSubwayDay()}</strong> miles a day to hit your goal!
+        You have <strong>{daysLeft()}</strong> days left to hit your goal!
+      </p>
+      <p>
+        Run <strong>{milesPerDay()}</strong> miles a day to hit your goal!
       </p>
       <p>&hellip;</p>
       <p>
@@ -223,21 +186,6 @@ function App() {
         <button onClick={() => toggleMileage(-1)}>👇</button>
         <button onClick={() => toggleMileage(1)}>👆</button>
       </div>
-      <p>&hellip;</p>
-      <p>
-        <strong>{currentMiles}</strong> of <strong>{mileageGoal}</strong> yearly
-        miles.
-      </p>
-      <p>
-        You are <strong>{currPace()}</strong> miles off your yearly goal pace of{" "}
-        <strong>{goalPace()}</strong>.
-      </p>
-      <p>
-        You have <strong>{daysLeft()}</strong> days left to hit your goal!
-      </p>
-      <p>
-        Run <strong>{milesPerDay()}</strong> miles a day to hit your goal!
-      </p>
     </div>
   );
 }

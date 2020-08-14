@@ -48,6 +48,7 @@ strong {
   height: 50px;
   border: 1px solid hotpink;
   z-index: 0;
+  margin-bottom: 16px;
 }
 
 .progress-bar .bar {
@@ -57,7 +58,7 @@ strong {
   width: 0;
   height: 50px;
   background-color: rgb(118, 27, 169);
-  transition: ease-in 3s;
+  transition: ease-in 1s;
   z-index: -1;
 }
 
