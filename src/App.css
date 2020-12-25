@@ -65,3 +65,14 @@ strong {
 .progress-bar.animate.bar {
   width: 50%;
 }
+
+#goal-status {
+  transform: scale(0);
+  transition: ease-in 0.4s;
+  margin: 0 auto;
+}
+
+#goal-status.goal-complete {
+  transform: scale(1.25) rotate(360deg);
+  margin: 22px auto;
+}

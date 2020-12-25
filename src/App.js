@@ -1,10 +1,14 @@
 import React, { useState, useEffect } from "react";
+import confetti from "canvas-confetti";
 import "./App.css";
 import testData from "./data/testData";
 
 function App() {
   const [isLoading, setIsLoading] = useState(true);
+
   const [mileageGoal, setMileageGoal] = useState(2020);
+  const [mileageGoalComplete, setMileageGoalStatus] = useState("");
+
   const [currentMiles, setCurrentMiles] = useState(0);
   const [progressBar, setProgressBar] = useState("0%");
 
@@ -65,6 +69,39 @@ function App() {
       weeklyMileageGoal + mile > 0 ? weeklyMileageGoal + mile : 0;
     setWeeklyMileageGoal(weeklyGoal);
     localStorage.setItem("weeklyGoal", weeklyGoal);
+  };
+
+  const shootConfetti = () => {
+    var duration = 10 * 1000;
+    var animationEnd = Date.now() + duration;
+    var defaults = { startVelocity: 30, spread: 360, ticks: 60, zIndex: 0 };
+
+    function randomInRange(min, max) {
+      return Math.random() * (max - min) + min;
+    }
+
+    var interval = setInterval(function () {
+      var timeLeft = animationEnd - Date.now();
+
+      if (timeLeft <= 0) {
+        return clearInterval(interval);
+      }
+
+      var particleCount = 50 * (timeLeft / duration);
+      // since particles fall down, start a bit higher than random
+      confetti(
+        Object.assign({}, defaults, {
+          particleCount,
+          origin: { x: randomInRange(0.1, 0.3), y: Math.random() - 0.2 },
+        })
+      );
+      confetti(
+        Object.assign({}, defaults, {
+          particleCount,
+          origin: { x: randomInRange(0.7, 0.9), y: Math.random() - 0.2 },
+        })
+      );
+    }, 250);
   };
 
   useEffect(() => {
@@ -131,8 +168,16 @@ function App() {
     setTimeout(() => {
       let progress = ((currentMiles / mileageGoal) * 100).toFixed(2);
       setProgressBar(`${progress}%`);
+
+      // Show some pep if the goal has been met!
+      if (progress >= 100) {
+        setTimeout(() => {
+          setMileageGoalStatus("goal-complete");
+          shootConfetti();
+        }, 1250);
+      }
     }, 1000);
-  }, [currentMiles]);
+  }, [currentMiles, mileageGoal]);
 
   return isLoading ? (
     <div className="App">
@@ -142,13 +187,16 @@ function App() {
   ) : (
     <div className="App">
       <h1>🦄 Ashley Runs the World! 🏃‍♀️</h1>
-      <div className="progress-bar subway">
+      <div className="progress-bar">
         <div className="bar" style={{ width: progressBar }}></div>
         <p>
           <strong>{currentMiles}</strong> of <strong>{mileageGoal}</strong> 🏁
           miles.
         </p>
       </div>
+      <h2 id="goal-status" className={mileageGoalComplete}>
+        🎉 You did it!!! 🎉
+      </h2>
       <p>
         You are <strong>{currPace()}</strong> miles off your yearly goal pace of{" "}
         <strong>{goalPace()}</strong>.
