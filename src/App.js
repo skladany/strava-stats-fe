@@ -174,7 +174,7 @@ function App() {
         setTimeout(() => {
           setMileageGoalStatus("goal-complete");
           shootConfetti();
-        }, 1250);
+        }, 1150);
       }
     }, 1000);
   }, [currentMiles, mileageGoal]);

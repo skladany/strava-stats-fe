@@ -772,7 +772,7 @@ const testData = [
     start_date: "2020-08-10T22:51:08Z",
   },
   {
-    distance: 1205100.6,
+    distance: 120510.6,
     start_date: "2020-08-11T21:54:44Z",
   },
   {
