@@ -6,7 +6,7 @@ import testData from "./data/testData";
 function App() {
   const [isLoading, setIsLoading] = useState(true);
 
-  const [mileageGoal, setMileageGoal] = useState(2020);
+  const [mileageGoal, setMileageGoal] = useState(2021);
   const [mileageGoalComplete, setMileageGoalStatus] = useState("");
 
   const [currentMiles, setCurrentMiles] = useState(0);
