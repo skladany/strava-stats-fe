@@ -4,6 +4,8 @@ import "./App.css";
 import testData from "./data/testData";
 
 function App() {
+  const ATHLETE = process.env.ATHLETE ?? "steve";
+
   const [isLoading, setIsLoading] = useState(true);
 
   const [mileageGoal, setMileageGoal] = useState(2021);
@@ -117,12 +119,12 @@ function App() {
       let page = 1;
       let runData = [];
 
-      if (process.env.NODE_ENV === "development") {
+      if (process.env.NODE_ENV === "development_") {
         runData = testData;
       } else {
         while (true) {
           const data = await fetch(
-            `${endpoint}/strava/distance_run?page=${page}&per_page=50`
+            `${endpoint}/strava/distance_run/${ATHLETE}/?page=${page}&per_page=50`
           ).then((r) => r.json());
 
           if (data.length < 1) {
@@ -181,7 +183,7 @@ function App() {
 
   return isLoading ? (
     <div className="App">
-      <h1>🦄 Ashley Runs the World! 🏃‍♀️</h1>
+      <h1>🦄 Ashley Runs the World! 🏃‍♀️</h1>)
       <img src="/loading.gif" />
     </div>
   ) : (
