@@ -113,7 +113,7 @@ function App() {
     };
 
     const fetchData = async () => {
-      const endpoint = `https://tranquil-garden-10879.herokuapp.com`;
+      const endpoint = `https://api-postal-run.herokuapp.com`;
       //const endpoint = `http://localhost:7777`;
 
       let page = 1;
@@ -164,7 +164,7 @@ function App() {
 
     loadLocalStorage();
     fetchData();
-  }, []);
+  }, [ATHLETE]);
 
   useEffect(() => {
     setTimeout(() => {
@@ -183,7 +183,7 @@ function App() {
 
   return isLoading ? (
     <div className="App">
-      <h1>🦄 Ashley Runs the World! 🏃‍♀️</h1>)
+      <h1>🦄 Ashley Runs the World! 🏃‍♀️</h1>
       <img src="/loading.gif" />
     </div>
   ) : (
