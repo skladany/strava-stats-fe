@@ -4,7 +4,9 @@ import "./App.css";
 import testData from "./data/testData";
 
 function App() {
-  const ATHLETE = process.env.ATHLETE ?? "steve";
+  console.log(process.env.ATHLETE);
+  const ATHLETE = "ashley";
+  // const ATHLETE = process.env.ATHLETE ?? "steve";
 
   const [isLoading, setIsLoading] = useState(true);
 
@@ -119,7 +121,7 @@ function App() {
       let page = 1;
       let runData = [];
 
-      if (process.env.NODE_ENV === "development_") {
+      if (process.env.NODE_ENV === "development") {
         runData = testData;
       } else {
         while (true) {
