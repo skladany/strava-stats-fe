@@ -4,10 +4,24 @@ import "./App.css";
 import testData from "./data/testData";
 
 function App() {
+  const capitalize = (s) => {
+    if (typeof s !== "string") return "";
+    return s.charAt(0).toUpperCase() + s.slice(1);
+  };
+
   // Swapping out Athlete based on the subdomain. Super simple.
   const ATHLETE = window.location.hostname.includes("ashley")
     ? "ashley"
     : "steve";
+
+  const [athlete, setAthlete] = useState(capitalize(ATHLETE));
+
+  const headline =
+    "steve" === ATHLETE
+      ? `👟 ${athlete} Runs the World! 🏃‍♂️`
+      : `🦄 ${athlete} Runs the World! 🏃‍♀️`;
+
+  const [title, setTitle] = useState(headline);
 
   const [isLoading, setIsLoading] = useState(true);
 
@@ -186,12 +200,12 @@ function App() {
 
   return isLoading ? (
     <div className="App">
-      <h1>🦄 Ashley Runs the World! 🏃‍♀️</h1>
+      <h1>{title}</h1>
       <img src="/loading.gif" />
     </div>
   ) : (
     <div className="App">
-      <h1>🦄 Ashley Runs the World! 🏃‍♀️</h1>
+      <h1>{title}</h1>
       <div className="progress-bar">
         <div className="bar" style={{ width: progressBar }}></div>
         <p>
