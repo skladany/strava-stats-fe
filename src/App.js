@@ -4,9 +4,8 @@ import "./App.css";
 import testData from "./data/testData";
 
 function App() {
-  console.log(process.env.ATHLETE);
-  const ATHLETE = "ashley";
-  // const ATHLETE = process.env.ATHLETE ?? "steve";
+  console.log(process.env.REACT_APP_ATHLETE);
+  const ATHLETE = process.env.REACT_APP_ATHLETE ?? "steve";
 
   const [isLoading, setIsLoading] = useState(true);
 
