@@ -5,6 +5,7 @@ import testData from "./data/testData";
 
 function App() {
   console.log(process.env.REACT_APP_ATHLETE);
+  console.log(process.env);
   const ATHLETE = process.env.REACT_APP_ATHLETE ?? "steve";
 
   const [isLoading, setIsLoading] = useState(true);
@@ -189,6 +190,7 @@ function App() {
     </div>
   ) : (
     <div className="App">
+      <h2>{process.env.REACT_APP_ATHLETE}</h2>
       <h1>🦄 Ashley Runs the World! 🏃‍♀️</h1>
       <div className="progress-bar">
         <div className="bar" style={{ width: progressBar }}></div>
