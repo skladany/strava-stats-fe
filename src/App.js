@@ -25,7 +25,7 @@ function App() {
 
   const [isLoading, setIsLoading] = useState(true);
 
-  const [mileageGoal, setMileageGoal] = useState(2021);
+  const [mileageGoal, setMileageGoal] = useState(2022);
   const [mileageGoalComplete, setMileageGoalStatus] = useState("");
 
   const [currentMiles, setCurrentMiles] = useState(0);
@@ -99,7 +99,7 @@ function App() {
       return Math.random() * (max - min) + min;
     }
 
-    var interval = setInterval(function () {
+    var interval = setInterval(function() {
       var timeLeft = animationEnd - Date.now();
 
       if (timeLeft <= 0) {
