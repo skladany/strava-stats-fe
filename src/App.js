@@ -175,8 +175,6 @@ function App() {
       );
       setCurrentElevation(metersToFeet(elevation));
 
-      //total_elevation_gain
-
       const today = new Date();
       const monday = startOfWeek(today);
 
