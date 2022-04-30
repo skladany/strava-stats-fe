@@ -31,6 +31,8 @@ function App() {
   const [currentMiles, setCurrentMiles] = useState(0);
   const [progressBar, setProgressBar] = useState("0%");
 
+  const [currentElevation, setCurrentElevation] = useState(0);
+
   const [weeklyMileageGoal, setWeeklyMileageGoal] = useState(40);
   const [currentWeeklyMiles, setCurrentWeeklyMiles] = useState(0);
 
@@ -70,6 +72,10 @@ function App() {
 
   const metersToMiles = (meters) => {
     return (meters * 0.000621371).toFixed(2);
+  };
+
+  const metersToFeet = (meters) => {
+    return (meters * 3.28084).toFixed(2);
   };
 
   // Get the start of the week, given the current date
@@ -154,11 +160,20 @@ function App() {
         } // end while
       }
 
-      // Parse the data
+      // Parse the total distance
       const distance = runData.reduce((totalDistance, { distance }) => {
         return totalDistance + distance;
       }, 0);
       setCurrentMiles(metersToMiles(distance));
+
+      // Parse the total elevation
+      const elevation = runData.reduce(
+        (totalElevation, { total_elevation_gain }) => {
+          return totalElevation + total_elevation_gain;
+        },
+        0
+      );
+      setCurrentElevation(metersToFeet(elevation));
 
       const today = new Date();
       const monday = startOfWeek(today);
@@ -226,6 +241,10 @@ function App() {
       <p>
         Run <strong>{milesPerDay()}</strong> miles a day to hit your goal!
       </p>
+      <p>
+        You have climbed <strong>{currentElevation}</strong> feet 🧗‍♀️ this year!
+      </p>
+
       <p>&hellip;</p>
       <p>
         <strong>{currentWeeklyMiles}</strong> of{" "}
